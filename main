@@ -1,0 +1,104 @@
+#include<bits/stdc++.h>
+#define int long long
+#define re register
+#define il inline
+#define pb push_back
+#define what_is(x)  cerr<<#x<<" is "<<x<<endl;
+#define rep(i, begin, end) for (__typeof(end) i = (begin) - ((begin) > (end)); i != (end) - ((begin) > (end)); i += 1 - 2 * ((begin) > (end)))
+#define all(x) (x).begin(), (x).end()
+#define ls(k) k << 1
+#define rs(k) k << 1 | 1
+#define np pair<int, int>
+#define mp make_pair
+#define nb(k) bitset<k>
+#define rev reverse
+using namespace std;
+inline int read()
+{
+	int x=0,f=1;char ch=getchar();
+	while(ch<'0'||ch>'9'){ if(ch=='-') f=-1; ch=getchar(); }
+	while(ch>='0'&&ch<='9') { x=(x<<1)+(x<<3)+(ch^48); ch=getchar(); }
+	return x*f;
+}
+
+
+void write(int x)
+{
+	if (x < 0) putchar('-'), x = -x;
+	if (x > 9) write(x / 10);
+	putchar(x % 10 + '0');
+	return;
+}
+#define el(x) e[x].l
+#define er(x) e[x].r
+const int N=1e5+10;
+struct E{
+	int l,r,mx;
+}e[N];
+int a[N];
+void build_tree(int k,int l,int r){
+	e[k].l=l,e[k].r=r;
+	if(l==r) {
+		e[k].mx=a[l];
+		return;
+	}
+	int mid=(l+r)>>1;
+	int lk=2*k,rk=2*k+1;
+	build_tree(lk,l,mid),build_tree(rk,mid+1,r);
+	e[k].mx=max(e[lk].mx,e[rk].mx);//
+	return;
+}
+void updata(int k,int i,int x){
+	if(e[k].l==e[k].r&&e[k].l==i){
+		e[k].mx=x;
+		return;
+	}
+	int mid=(e[k].l+e[k].r)>>1;
+	if(i<=mid) updata(2*k,i,x);
+	else updata(2*k+1,i,x);
+	e[k].mx=max(e[2*k].mx,e[2*k+1].mx);//
+	return ;
+}
+int query(int k,int l,int r){
+	if(e[k].l>=l&&e[k].r<=r){
+		return e[k].mx;
+	}
+	int mid=(el(k)+er(k))>>1,MAX=-2e9;
+	if(l<=mid){
+		MAX=max(MAX,query(2*k,l,r));
+	}
+	if(r>mid){
+		MAX=max(MAX,query(2*k+1,l,r));	
+	}
+	return MAX;
+}
+signed main()
+{
+	ios::sync_with_stdio(false);
+	int n;
+	cin>>n;
+	for(int i=1;i<=n;i++){
+		cin>>a[i];
+	}
+	build_tree(1,1,n);
+	updata(1,2,5);
+
+	for(int i=1;i<=5;i++){
+		cout<<e[i].l<<" "<<e[i].r<<" "<<e[i].mx<<endl;
+	}
+	cout<<query(1,1,n);
+	return 0;
+}
+
+/*
+  0. Enough array size? Enough array size? Enough array size? Interger overflow?
+  
+  1. Think TWICE, Code ONCE!
+  Are there any counterexamples to your algo?
+  
+  2. Be careful about the BOUNDARIES!
+  N=1? P=1? Something about 0?
+  
+  3. Do not make STUPID MISTAKES!
+  Time complexity? Memory usage? Precision error?
+ */
